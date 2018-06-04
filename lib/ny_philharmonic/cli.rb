@@ -1,9 +1,9 @@
 class NyPhilharmonic::CLI
-  attr_accessor :pages, :curent_page, :scraper
+  attr_accessor :pages, :curent_index, :scraper
 
   def initialize
     @pages = []
-    @current_page = 0
+    @current_index = 0
     @scraper = NyPhilharmonic::Scraper.new
   end
 
@@ -17,12 +17,12 @@ class NyPhilharmonic::CLI
 
   def display_page
     puts "\nUpcoming concerts: "
-    @pages[@current_page].concerts.each do |concert|
+    @pages[@current_index].concerts.each do |concert|
       puts "\n#{concert.number}. #{concert.title}"
-      puts "\tDates: #{concert.dates}"
+      puts "\tDate(s): #{concert.dates}"
     end
 
-    puts "\n< Page #{@current_page + 1} >"
+    puts "\n\t< Page #{@current_index + 1} >"
     puts
     #puts "Enter 'menu' to see a full list of commands"
     print "Enter a command: "
@@ -51,10 +51,19 @@ class NyPhilharmonic::CLI
   # end
 
   def next_page
-    @current_page += 1
-    if @pages[@current_page] == nil
+    @current_index += 1
+    if @pages[@current_index] == nil
       puts "Loading concerts (this may take a moment)..."
       @pages << @scraper.create_new_page
+
+      if @pages.last.concerts.length == 0
+        system("clear")
+        puts "There are no additional concerts"
+        @pages.pop
+        @current_index -= 1
+        display_page
+      end
+
       system("clear")
       display_page
     else
@@ -64,8 +73,13 @@ class NyPhilharmonic::CLI
   end
 
   def previous_page
-    puts @current_page == 0 ? "No previous concerts." : @current_page -= 1
-    system("clear")
+    if @current_index == 0
+      system("clear")
+      puts "There are no previous concerts."
+    else
+      @current_index -= 1
+      system("clear")
+    end
     display_page
   end
 
