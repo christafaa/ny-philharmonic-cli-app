@@ -1,11 +1,7 @@
 class NyPhilharmonic::CLI
   def call
-    NyPhilharmonic::Scraper.new.create_concerts
-    # puts "Welcome to The New York Philharmonic CLI App"
-    # menu
-  end
-
-  def menu
+    system("clear")
+    puts "Welcome to The New York Philharmonic CLI App"
     puts "What would you like to do?"
     puts "1. Search all performances"
     puts "2. Search performances by month"
@@ -17,7 +13,7 @@ class NyPhilharmonic::CLI
     when "1" then search_performances
     when "2" then search_performances(month)
     when "3" then exit
-    else menu
+    else call
     end
   end
 
@@ -36,7 +32,7 @@ class NyPhilharmonic::CLI
     when "1" then list_all_performances
     when "2" then select_venue
     when "3" then select_month
-    when "4" then menu
+    when "4" then call
     when "5" then exit
     else search_performances
     end
