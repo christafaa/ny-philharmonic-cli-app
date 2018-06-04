@@ -10,7 +10,11 @@ class NyPhilharmonic::Page
     @number = ALL.length
   end
 
-  def self.select_page_by_number(number)
+  def self.all
     ALL
+  end
+
+  def self.select_page_by_number(number)
+    ALL[number - 1]
   end
 end

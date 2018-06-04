@@ -35,7 +35,7 @@ class NyPhilharmonic::Scraper
     doc.search("div.grey-bg div.col2").each {|piece| result[:pieces] << piece.text.strip}
     result[:url] = page_url
     result[:number] = counter
-
+    #might be able to combine composers/pieces
     doc.search("div.small-12 div.col33").each do |column|
       column_data = column.search("h5.teal").text.strip
       if column_data.include?("Location")
@@ -49,7 +49,7 @@ class NyPhilharmonic::Scraper
     result
   end
 
-  def create_five_concerts
+  def create_new_page
     new_concerts = []
     @concert_urls.slice!(0..4).each do |url|
       data_hash = scrape_from_concert_page("https://nyphil.org#{url}", @counter)
