@@ -1,5 +1,5 @@
 class NyPhilharmonic::Concert
-  attr_accessor :title, :dates, :times, :url, :venue, :price, :duration, :description
+  attr_accessor :title, :days, :months, :times, :url, :venue, :price, :duration, :composers, :pieces
 
   ALL = []
 

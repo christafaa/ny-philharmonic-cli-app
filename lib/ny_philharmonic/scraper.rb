@@ -13,26 +13,31 @@ class NyPhilharmonic::Scraper
   end
 
   def scrape_from_concert_page(page_url)
-    #return "data_hash" hash of :title, :dates, :times, :url, :venue, :price, :duration, :description
+    #return "data_hash" hash of :title, :days, :months, :times, :venue, :price, :duration, :composers, :pieces, :url
     doc = get_page(page_url)
     result = {}
 
     result[:title] = doc.search("div.small-12 div.mobblk h2").text
-    result[:dates] = []
-    doc.search("div.iblock div.date-cont p.month").each {|date| result[:dates] << date.text}
+    result[:days] = []
+    doc.search("div.iblock div.date-cont p.date").each {|day| result[:days] << day.text.strip}
+    result[:months] = []
+    doc.search("div.iblock div.date-cont p.month").each {|date| result[:months] << date.text.strip}
     result[:times] = []
-    doc.search("div.iblock div.col33 h3").each {|time| result[:times] << time.text}
+    doc.search("div.iblock div.col33 h3").each {|time| result[:times] << time.text.strip}
+    result[:composers] = []
+    doc.search("div.grey-bg div.col1").each {|composer| result[:composers] << composer.text.strip}
+    result[:pieces] = []
+    doc.search("div.grey-bg div.col2").each {|piece| result[:pieces] << piece.text.strip}
     result[:url] = page_url
-    #result[:program] = doc.search("")
 
     doc.search("div.small-12 div.col33").each do |column|
       column_data = column.search("h5.teal").text.strip
       if column_data.include?("Location")
-        result[:venue] = column.search("h2").text
+        result[:venue] = column.search("h2").text.strip
       elsif column_data.include?("Price Range")
-        result[:price] = column.search("h2").text
+        result[:price] = column.search("h2").text.strip
       elsif column_data.include?("Duration")
-        result[:duration] = column.search("h2").text
+        result[:duration] = column.search("h2").text.strip
       end
     end
     result
