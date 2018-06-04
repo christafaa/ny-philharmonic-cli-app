@@ -16,6 +16,7 @@ class NyPhilharmonic::CLI
   end
 
   def display_page
+    system("clear")
     puts "\nUpcoming concerts: "
     @pages[@current_index].concerts.each do |concert|
       puts "\n#{concert.number}. #{concert.title}"
@@ -23,18 +24,55 @@ class NyPhilharmonic::CLI
     end
 
     puts "\n\t< Page #{@current_index + 1} >"
-    puts
+    puts "\nEnter a concert's number to see more information about that concert"
+    puts "Enter '<' to scroll back and '>' to scroll forward (do not use arrow keys)"
     #puts "Enter 'menu' to see a full list of commands"
     print "Enter a command: "
     input = gets.chomp.downcase
 
-    case input
-    # #when "menu" then menu
-    when ">" then next_page
-    when "<" then previous_page
-    # else
-    #   puts "Please use one of these commands:"
-    #   menu
+    concert_numbers = @pages[@current_index].concerts.map{|concert| concert.number}
+
+    if input == ">"
+      next_page
+    elsif input == "<"
+      previous_page
+    elsif concert_numbers.include?(input.to_i)
+      display_concert(input)
+    else
+      display_page
+    end
+  end
+
+  def display_concert(number)
+    system("clear")
+    concert = NyPhilharmonic::Concert.find_by_number(number.to_i)
+    puts concert.title
+
+    puts "\nLocation: #{concert.venue}" unless concert.venue == nil
+    puts "Price: #{concert.price}" unless concert.price == nil
+    puts "Duration: #{concert.duration}" unless concert.duration == nil
+
+    puts "\nDates:"
+    concert.full_date_with_time.each {|time| puts "\t#{time}"}
+
+    puts "\nPROGRAM:"
+    concert.program.each {|program| puts "\t#{program}"}
+
+    puts "\nWhat would you like to do?"
+    puts "1. Open this concert in your browser"
+    puts "2. Go back to list"
+    print "Enter a number: "
+
+    input = gets.chomp
+
+    if input == "1"
+      system("open", "#{concert.url}")
+      display_concert(number)
+    elsif input == "2"
+      system("clear")
+      display_page
+    else
+      display_concert(number)
     end
   end
 
