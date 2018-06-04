@@ -1,6 +1,10 @@
 #only load 10 at a time
 class NyPhilharmonic::Scraper
-  attr_accessor :concert_urls, :book_mark
+  attr_accessor :concert_urls, :counter
+
+  def initialize
+    @counter = 1
+  end
 
   def get_page(url)
     doc = Nokogiri::HTML(open(url))
@@ -13,7 +17,7 @@ class NyPhilharmonic::Scraper
     @concert_urls = concert_link_objects.map {|concert| concert["href"]}.uniq
   end
 
-  def scrape_from_concert_page(page_url)
+  def scrape_from_concert_page(page_url, counter)
     #return "data_hash" hash of :title, :days, :months, :times, :venue, :price, :duration, :composers, :pieces, :url
     doc = get_page(page_url)
     result = {}
@@ -30,6 +34,7 @@ class NyPhilharmonic::Scraper
     result[:pieces] = []
     doc.search("div.grey-bg div.col2").each {|piece| result[:pieces] << piece.text.strip}
     result[:url] = page_url
+    result[:number] = counter
 
     doc.search("div.small-12 div.col33").each do |column|
       column_data = column.search("h5.teal").text.strip
@@ -45,10 +50,13 @@ class NyPhilharmonic::Scraper
   end
 
   def create_five_concerts
+    new_concerts = []
     @concert_urls.slice!(0..4).each do |url|
-      data_hash = scrape_from_concert_page("https://nyphil.org#{url}")
-      NyPhilharmonic::Concert.new(data_hash)
+      data_hash = scrape_from_concert_page("https://nyphil.org#{url}", @counter)
+      new_concerts << NyPhilharmonic::Concert.new(data_hash)
+      @counter += 1
     end
+    NyPhilharmonic::Page.new(new_concerts)
   end
 
 end

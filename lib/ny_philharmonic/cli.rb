@@ -9,14 +9,13 @@ class NyPhilharmonic::CLI
   end
 
   def search
-    counter = 1
     puts "\nUpcoming concerts: "
     NyPhilharmonic::Concert.all.each do |concert|
-      puts "\n#{counter}. #{concert.title}"
+      puts "\n#{concert.number}. #{concert.title}"
       puts "\tDates: #{concert.dates}"
-      counter += 1
     end
 
+    puts "< Page 1 >"
     puts "Enter 'menu' to see a full list of commands"
     print "Enter a command: "
     input = gets.chomp.downcase
