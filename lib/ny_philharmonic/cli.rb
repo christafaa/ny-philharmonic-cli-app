@@ -1,24 +1,46 @@
 class NyPhilharmonic::CLI
   def call
-    NyPhilharmonic::Scraper.new.create_concerts
-    # puts "Welcome to The New York Philharmonic CLI App"
-    # menu
+    puts "\nWelcome to The New York Philharmonic CLI App"
+    puts "Loading concerts (this may take a moment)..."
+    scraper = NyPhilharmonic::Scraper.new
+    scraper.get_concert_urls
+    scraper.create_five_concerts
+    search
+  end
+
+  def search
+    counter = 1
+    puts "\nUpcoming concerts: "
+    NyPhilharmonic::Concert.all.each do |concert|
+      puts "\n#{counter}. #{concert.title}"
+      puts "\tDates: #{concert.dates}"
+      counter += 1
+    end
+
+    puts "Enter 'menu' to see a full list of commands"
+    print "Enter a command: "
+    input = gets.chomp.downcase
+
+    case input
+    when "menu" then menu
+    when ">" then search_performances(month)
+    when "<" then exit
+    else
+      puts "Please use one of these commands:"
+      menu
+    end
   end
 
   def menu
-    puts "What would you like to do?"
+
+    puts "\nTo learn more about a concert, enter its number"
+    puts "To scroll forward and view more concerts, enter '>'"
+    puts "To scroll back and view previous concerts, enter '<'"
+
     puts "1. Search all performances"
     puts "2. Search performances by month"
     puts "3. Exit program"
     print "Enter a number: "
-    input = gets.chomp.downcase
-
-    case input
-    when "1" then search_performances
-    when "2" then search_performances(month)
-    when "3" then exit
-    else menu
-    end
   end
 
   def search_performances
@@ -36,7 +58,7 @@ class NyPhilharmonic::CLI
     when "1" then list_all_performances
     when "2" then select_venue
     when "3" then select_month
-    when "4" then menu
+    when "4" then search
     when "5" then exit
     else search_performances
     end

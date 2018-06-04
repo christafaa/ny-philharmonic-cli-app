@@ -1,5 +1,6 @@
 #only load 10 at a time
 class NyPhilharmonic::Scraper
+  attr_accessor :concert_urls, :book_mark
 
   def get_page(url)
     doc = Nokogiri::HTML(open(url))
@@ -9,7 +10,7 @@ class NyPhilharmonic::Scraper
     link_objects = get_page("https://nyphil.org/calendar?season=18&page=all").search("div.cal-date div.col70 div a")
     #use this when done https://nyphil.org/calendar?season=all&page=all
     concert_link_objects = link_objects.select {|concert| concert.text == "Event Details"}
-    concert_urls = concert_link_objects.map {|concert| concert["href"]}.uniq
+    @concert_urls = concert_link_objects.map {|concert| concert["href"]}.uniq
   end
 
   def scrape_from_concert_page(page_url)
@@ -43,11 +44,10 @@ class NyPhilharmonic::Scraper
     result
   end
 
-  def create_concerts
-    get_concert_urls.each do |url|
+  def create_five_concerts
+    @concert_urls.slice!(0..4).each do |url|
       data_hash = scrape_from_concert_page("https://nyphil.org#{url}")
-      #NyPhilharmonic::Concert.new(data_hash)
-      puts data_hash
+      NyPhilharmonic::Concert.new(data_hash)
     end
   end
 
