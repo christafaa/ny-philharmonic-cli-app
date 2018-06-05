@@ -1,8 +1,10 @@
 # NyPhilharmonic
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ny_philharmonic`. To experiment with that code, run `bin/console` for an interactive prompt.
+This CLI app collects all concert URLS from the New York Philharmonic's website,
+specifically this page: https://nyphil.org/calendar?season=all&page=all
 
-TODO: Delete this and the text above, and describe your gem
+Scroll through pages that list concerts in chronological order and select concerts
+to view additional details.
 
 ## Installation
 
@@ -22,7 +24,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Run: 'ny-philharmonic' after installing the gem.
 
 ## Development
 
@@ -37,3 +39,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## Code of Conduct
 
 Everyone interacting in the NyPhilharmonic project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/ny_philharmonic/blob/master/CODE_OF_CONDUCT.md).
+
+## License
+
+The gem is available as open source under the terms of the MIT License.
