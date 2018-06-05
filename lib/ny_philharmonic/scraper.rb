@@ -17,7 +17,7 @@ class NyPhilharmonic::Scraper
 
   def scrape_from_concert_page(page_url, counter)
     doc = get_page(page_url)
-    result = {
+    data_hash = {
       :title => doc.search("div.small-12 div.mobblk h2").text,
       :days => doc.search("div.iblock div.date-cont p.date").map {|day| day.text.strip},
       :months => doc.search("div.iblock div.date-cont p.month").map {|date| date.text.strip},
@@ -31,14 +31,14 @@ class NyPhilharmonic::Scraper
     doc.search("div.small-12 div.col33").each do |column|
       column_data = column.search("h5.teal").text.strip
       if column_data.include?("Location")
-        result[:venue] = column.search("h2").text.strip
+        data_hash[:venue] = column.search("h2").text.strip
       elsif column_data.include?("Price Range")
-        result[:price] = column.search("h2").text.strip
+        data_hash[:price] = column.search("h2").text.strip
       elsif column_data.include?("Duration")
-        result[:duration] = column.search("h2").text.strip
+        data_hash[:duration] = column.search("h2").text.strip
       end
     end
-    result
+    data_hash
   end
 
   def create_new_page
