@@ -19,7 +19,9 @@ class NyPhilharmonic::CLI
     system("clear")
     puts "The New York Philharmonic CLI App"
     puts "\nEnter a concert's number to see more information about that concert"
-    puts "Enter '<' to scroll back and '>' to scroll forward (do not use arrow keys)"
+    puts "Enter '>' to scroll to the next page or enter '<' to scroll to the previous page"
+    puts "(Do not use arrow keys)"
+    puts "Enter 'exit' to quit the program"
     puts "\nUpcoming concerts: "
     @pages[@current_index].concerts.each do |concert|
       puts "\n#{concert.number}. #{concert.title}"
@@ -37,7 +39,9 @@ class NyPhilharmonic::CLI
     elsif input == "<"
       previous_page
     elsif concert_numbers.include?(input.to_i)
-      display_concert(input)
+      display_concert(input.to_i)
+    elsif input == "exit"
+      exit
     else
       display_page
     end
@@ -47,7 +51,7 @@ class NyPhilharmonic::CLI
     system("clear")
     puts "The New York Philharmonic CLI App"
     puts
-    concert = NyPhilharmonic::Concert.find_by_number(number.to_i)
+    concert = NyPhilharmonic::Concert.find_by_number(number)
     puts concert.title
 
     puts "\nLocation: #{concert.venue}" if concert.venue
@@ -63,6 +67,7 @@ class NyPhilharmonic::CLI
     puts "\nWhat would you like to do?"
     puts "1. Open this concert in your browser"
     puts "2. Go back to list"
+    puts "3. Exit program"
     print "Enter a number: "
 
     input = gets.chomp
@@ -73,6 +78,8 @@ class NyPhilharmonic::CLI
     elsif input == "2"
       system("clear")
       display_page
+    elsif input == "3"
+      exit
     else
       display_concert(number)
     end

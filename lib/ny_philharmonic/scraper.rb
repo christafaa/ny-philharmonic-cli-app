@@ -2,7 +2,7 @@ class NyPhilharmonic::Scraper
   attr_accessor :concert_urls, :counter
 
   def initialize
-    @counter = 1
+    @counter = 0
   end
 
   def get_page(url)
@@ -11,11 +11,11 @@ class NyPhilharmonic::Scraper
 
   def get_concert_urls
     link_objects = get_page("https://nyphil.org/calendar?season=all&page=all").search("div.cal-date div.col70 div a")
-    concert_link_objects = link_objects.select {|concert| concert.text == "Event Details"}
+    concert_link_objects = link_objects.select {|link| link.text == "Event Details"}
     @concert_urls = concert_link_objects.map {|concert| concert["href"]}.uniq
   end
 
-  def scrape_from_concert_page(page_url, counter)
+  def scrape_concert_page(page_url, counter)
     doc = get_page(page_url)
     data_hash = {
       :title => doc.search("div.small-12 div.mobblk h2").text,
@@ -27,27 +27,26 @@ class NyPhilharmonic::Scraper
       :url => page_url,
       :number => counter
     }
-    #might be able to combine composers/pieces
+
     doc.search("div.small-12 div.col33").each do |column|
       column_data = column.search("h5.teal").text.strip
-      if column_data.include?("Location")
-        data_hash[:venue] = column.search("h2").text.strip
-      elsif column_data.include?("Price Range")
-        data_hash[:price] = column.search("h2").text.strip
-      elsif column_data.include?("Duration")
-        data_hash[:duration] = column.search("h2").text.strip
-      end
+
+      data_hash[:venue] = column.search("h2").text.strip if column_data.include?("Location")
+      data_hash[:price] = column.search("h2").text.strip if column_data.include?("Price Range")
+      data_hash[:duration] = column.search("h2").text.strip if column_data.include?("Duration")
     end
     data_hash
   end
 
-  def create_new_page
-    new_concerts = []
-    @concert_urls.slice!(0..4).each do |url|
-      data_hash = scrape_from_concert_page("https://nyphil.org#{url}", @counter)
-      new_concerts << NyPhilharmonic::Concert.new(data_hash)
+  def create_concerts
+    @concert_urls.slice!(0..4).map do |url|
       @counter += 1
+      data_hash = scrape_concert_page("https://nyphil.org#{url}", @counter)
+      NyPhilharmonic::Concert.new(data_hash)
     end
-    NyPhilharmonic::Page.new(new_concerts)
+  end
+
+  def create_new_page
+    NyPhilharmonic::Page.new(create_concerts)
   end
 end
