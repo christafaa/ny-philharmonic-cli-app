@@ -17,16 +17,16 @@ class NyPhilharmonic::Scraper
 
   def scrape_from_concert_page(page_url, counter)
     doc = get_page(page_url)
-    result = {}
-
-    result[:title] = doc.search("div.small-12 div.mobblk h2").text
-    result[:days] = doc.search("div.iblock div.date-cont p.date").map {|day| day.text.strip}
-    result[:months] = doc.search("div.iblock div.date-cont p.month").map {|date| date.text.strip}
-    result[:times] = doc.search("div.iblock div.col33 h3").map {|time| time.text.strip}
-    result[:composers] = doc.search("div.grey-bg div.col1").map {|composer| composer.text.strip}
-    result[:pieces] = doc.search("div.grey-bg div.col2").map {|piece| piece.text.strip}
-    result[:url] = page_url
-    result[:number] = counter
+    result = {
+      :title => doc.search("div.small-12 div.mobblk h2").text,
+      :days => doc.search("div.iblock div.date-cont p.date").map {|day| day.text.strip},
+      :months => doc.search("div.iblock div.date-cont p.month").map {|date| date.text.strip},
+      :times => doc.search("div.iblock div.col33 h3").map {|time| time.text.strip},
+      :composers => doc.search("div.grey-bg div.col1").map {|composer| composer.text.strip},
+      :pieces => doc.search("div.grey-bg div.col2").map {|piece| piece.text.strip},
+      :url => page_url,
+      :number => counter
+    }
     #might be able to combine composers/pieces
     doc.search("div.small-12 div.col33").each do |column|
       column_data = column.search("h5.teal").text.strip
