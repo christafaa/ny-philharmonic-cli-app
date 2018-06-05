@@ -1,5 +1,6 @@
 class NyPhilharmonic::Concert
-  attr_accessor :title, :days, :months, :times, :url, :venue, :price, :duration, :composers, :pieces, :number
+  attr_accessor :title, :url, :venue, :price, :duration, :composers, :pieces, :number
+  attr_reader :days, :months, :times
 
   ALL = []
 
@@ -17,10 +18,11 @@ class NyPhilharmonic::Concert
   end
 
   def short_date
-    @months.map.with_index do |month, i|
+    result = @months.map.with_index do |month, i|
       month_data = month.split(", ")
       "#{month_data[0]} #{@days[i]}, #{month_data[1]}"
-    end.join("; ")
+    end
+    result.join("; ")
   end
 
   def full_date_with_time

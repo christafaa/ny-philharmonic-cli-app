@@ -6,8 +6,8 @@ class NyPhilharmonic::Page
 
   def initialize(concerts)
     @concerts = concerts
+    @number = ALL.length + 1
     ALL << self
-    @number = ALL.length
   end
 
   def self.all

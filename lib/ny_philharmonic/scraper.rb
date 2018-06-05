@@ -20,16 +20,11 @@ class NyPhilharmonic::Scraper
     result = {}
 
     result[:title] = doc.search("div.small-12 div.mobblk h2").text
-    result[:days] = []
-    doc.search("div.iblock div.date-cont p.date").each {|day| result[:days] << day.text.strip}
-    result[:months] = []
-    doc.search("div.iblock div.date-cont p.month").each {|date| result[:months] << date.text.strip}
-    result[:times] = []
-    doc.search("div.iblock div.col33 h3").each {|time| result[:times] << time.text.strip}
-    result[:composers] = []
-    doc.search("div.grey-bg div.col1").each {|composer| result[:composers] << composer.text.strip}
-    result[:pieces] = []
-    doc.search("div.grey-bg div.col2").each {|piece| result[:pieces] << piece.text.strip}
+    result[:days] = doc.search("div.iblock div.date-cont p.date").map {|day| day.text.strip}
+    result[:months] = doc.search("div.iblock div.date-cont p.month").map {|date| date.text.strip}
+    result[:times] = doc.search("div.iblock div.col33 h3").map {|time| time.text.strip}
+    result[:composers] = doc.search("div.grey-bg div.col1").map {|composer| composer.text.strip}
+    result[:pieces] = doc.search("div.grey-bg div.col2").map {|piece| piece.text.strip}
     result[:url] = page_url
     result[:number] = counter
     #might be able to combine composers/pieces
@@ -55,5 +50,4 @@ class NyPhilharmonic::Scraper
     end
     NyPhilharmonic::Page.new(new_concerts)
   end
-
 end
