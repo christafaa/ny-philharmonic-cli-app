@@ -1,4 +1,3 @@
-#only load 10 at a time
 class NyPhilharmonic::Scraper
   attr_accessor :concert_urls, :counter
 
@@ -11,14 +10,12 @@ class NyPhilharmonic::Scraper
   end
 
   def get_concert_urls
-    link_objects = get_page("https://nyphil.org/calendar?season=18&page=all").search("div.cal-date div.col70 div a")
-    #use this when done https://nyphil.org/calendar?season=all&page=all
+    link_objects = get_page("https://nyphil.org/calendar?season=all&page=all").search("div.cal-date div.col70 div a")
     concert_link_objects = link_objects.select {|concert| concert.text == "Event Details"}
     @concert_urls = concert_link_objects.map {|concert| concert["href"]}.uniq
   end
 
   def scrape_from_concert_page(page_url, counter)
-    #return "data_hash" hash of :title, :days, :months, :times, :venue, :price, :duration, :composers, :pieces, :url
     doc = get_page(page_url)
     result = {}
 
