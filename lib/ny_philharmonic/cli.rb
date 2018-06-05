@@ -23,7 +23,7 @@ class NyPhilharmonic::CLI
     puts "\nUpcoming concerts: "
     @pages[@current_index].concerts.each do |concert|
       puts "\n#{concert.number}. #{concert.title}"
-      puts "\tDate(s): #{concert.dates}"
+      puts "\tDate(s): #{concert.short_date}"
     end
 
     puts "\n\t< Page #{@current_index + 1} >"
