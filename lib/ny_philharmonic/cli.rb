@@ -19,8 +19,8 @@ class NyPhilharmonic::CLI
     system("clear")
     puts "The New York Philharmonic CLI App"
     puts "\nEnter a concert's number to see more information about that concert"
-    puts "Enter '>' to scroll to the next page or enter '<' to scroll to the previous page"
-    puts "(Do not use arrow keys)"
+    puts "Enter '>' to scroll to the next page"
+    puts "Enter '<' to scroll to the previous page (Do not use arrow keys)"
     puts "Enter 'exit' to quit the program"
     puts "\nUpcoming concerts: "
     @pages[@current_index].concerts.each do |concert|
@@ -50,9 +50,9 @@ class NyPhilharmonic::CLI
   def display_concert(number)
     system("clear")
     puts "The New York Philharmonic CLI App"
-    puts
+
     concert = NyPhilharmonic::Concert.find_by_number(number)
-    puts concert.title
+    puts "\n#{concert.title}"
 
     puts "\nLocation: #{concert.venue}" if concert.venue
     puts "Price: #{concert.price}" if concert.price
@@ -76,7 +76,6 @@ class NyPhilharmonic::CLI
       system("open", "#{concert.url}")
       display_concert(number)
     elsif input == "2"
-      system("clear")
       display_page
     elsif input == "3"
       exit
@@ -92,30 +91,15 @@ class NyPhilharmonic::CLI
       @pages << @scraper.create_new_page
 
       if @pages.last.concerts.length == 0
-        system("clear")
-        puts "There are no additional concerts"
         @pages.pop
         @current_index -= 1
-        display_page
       end
-
-      system("clear")
-      display_page
-    else
-      system("clear")
-      display_page
-    end
-  end
-
-  def previous_page
-    if @current_index == 0
-      system("clear")
-      puts "There are no previous concerts."
-    else
-      @current_index -= 1
-      system("clear")
     end
     display_page
   end
-#search by venue or by month
+
+  def previous_page
+    @current_index -= 1 unless @current_index == 0
+    display_page
+  end
 end
