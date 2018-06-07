@@ -28,7 +28,7 @@ class NyPhilharmonic::CLI
       puts "\tDate(s): #{concert.short_date}"
     end
 
-    puts "\n\t< Page #{@current_index + 1} >"
+    puts @current_index == 0 ? "\n\tPage #{@current_index + 1} >" : "\n\t< Page #{@current_index + 1} >"
     print "\nEnter a command: "
     input = gets.chomp.downcase
 
