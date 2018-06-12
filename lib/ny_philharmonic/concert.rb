@@ -1,15 +1,15 @@
 class NyPhilharmonic::Concert
   attr_accessor :title, :url, :venue, :price, :duration, :composers, :pieces, :number, :days, :months, :times
 
-  ALL = []
+  @@all = []
 
   def initialize(data_hash)
     data_hash.each {|k, v| self.instance_variable_set("@#{k}", v)}
-    ALL << self
+    @@all << self
   end
 
   def self.all
-    ALL
+    @@all
   end
 
   def program
@@ -33,6 +33,6 @@ class NyPhilharmonic::Concert
   end
 
   def self.find_by_number(number)
-    ALL.find {|concert| concert.number == number}
+    @@all.find {|concert| concert.number == number}
   end
 end
